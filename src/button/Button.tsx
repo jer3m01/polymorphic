@@ -53,7 +53,7 @@ type CComponentProps<T extends CValidComponent> = T extends keyof JSX.HTMLElemen
 
 type ExtractProps<T extends {}, Props extends {}> = Pick<T, keyof T & keyof Props>;
 
-type ElementHasProps<T extends keyof JSX.HTMLElementTags, Props extends {}> = Props extends ExtractProps<JSX.HTMLElementTags[T], B> ? T : never;
+type ElementHasProps<T extends keyof JSX.HTMLElementTags, Props extends {}> = Props extends ExtractProps<JSX.HTMLElementTags[T], RenderProps> ? T : never;
 
 type ValidPElementTags<Props extends {}> = {
 	[Key in keyof JSX.HTMLElementTags]: ElementHasProps<Key, Props>;
@@ -70,7 +70,9 @@ interface PolymorphicAttributes<T extends CValidComponent> {
 	as?: T;
 }
 
-export type PolymorphicProps<T extends CValidComponent> = CComponentProps<T> & PolymorphicAttributes<T>;
+type EmptyObj = Record<PropertyKey, never>;
+
+export type PolymorphicProps<T extends CValidComponent, RenderProps extends {} = {}, ComponentProps extends {} = {}> = CComponentProps<T> & Partial<RenderProps> & ComponentProps & PolymorphicAttributes<T>;
 
 
 // type?: "submit" | "reset" | "button"
@@ -85,25 +87,37 @@ type t = ElementHasProps<"button", {type?: "submit" | "reset" | "button"}>
 
 
 
-type A = {href?: "submit", other: true};
-type B = {href: "submit"};
+type A = {href?: "submit" | "reset", other?: true};
+type RenderProps = {href: "submit"};
 type C = {
 	C: A;
 };
 
-type t5 = Required<A> extends B ? true : false;
+type t5 = Required<A> extends RenderProps ? true : false;
 
-type t6 = B extends ExtractProps<A, B> ? true : false;
+type t6 = RenderProps extends ExtractProps<A, RenderProps> ? true : false;
 
 type AA = (args: A) => "";
 
-type t10 = B extends ExtractProps<ComponentProps<"C">, B> ? true : false;
+function test<T extends ValidPElementTags<RenderProps> | Component<ExtractProps<T, RenderProps & PolymorphicAttributes<T>>>>(t: T) {
 
-function test<T extends ValidPElementTags<B> | Component<RequiredFieldsOnly<B>>>(t: T) {}
+}
 
 test("button");
 
-test((a: {href?: "submit", other: true}) => "");
+test((a: {href?: "submit", other?: true}) => "");
+
+
+type Extend<T> = {
+	[P in keyof T]: T[P] | undefined | {};
+};
+
+type t11 = A extends Extend<RenderProps> ? true : false;
+
+type Test<T> = T;
+
+
+function test2<T extends Component<ExtractProps<T, RenderProps>>>(t: T) {}
 
 type a = {
 	a: string,
