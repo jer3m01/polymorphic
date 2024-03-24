@@ -50,11 +50,14 @@ function Button<
 interface Custom {
 	variant?: "outline" | "default";
 	children?: JSXElement;
-	type?: "button" | "submit";
+	other?: "customAttribute";
 }
 
 function CustomButton(props: Custom): JSXElement {
 	return "";
 }
 
-export const CustomExample = <Button<typeof CustomButton> requiredOption="requiredOptionValue" variant="default" as={(props) => ""}/>
+
+export const CustomExample = <Button requiredOption="requiredOptionValue" variant="default" other="customAttribute" as={CustomButton}/>;
+
+export const CustomCallbackExample = <Button<typeof CustomButton> requiredOption="requiredOptionValue" variant="default" other="customAttribute" as={(props) => ""}/>;
