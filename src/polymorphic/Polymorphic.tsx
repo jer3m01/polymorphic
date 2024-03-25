@@ -20,9 +20,14 @@ export type ElementHasProps<
 	Props extends {},
 > = Props extends ExtractProps<JSX.HTMLElementTags[T], Props> ? T : never;
 
-export type OptionalKeys<T> = Exclude<{
-	[K in keyof T]: {} extends Pick<T, K> ? K : never
-}[keyof T], undefined>;
+export type OptionalKeys<T> = Exclude<
+	{
+		[K in keyof T]: {} extends Pick<T, K> ? K : never;
+	}[keyof T],
+	undefined
+>;
+
+export type OverrideProps<T, P> = Omit<T, keyof P> & P;
 
 export type ValidPElementTags<Props extends {}> = {
 	[Key in keyof JSX.HTMLElementTags]: ElementHasProps<Key, Props>;
@@ -49,12 +54,21 @@ export type PolymorphicProps<
 	T extends ValidTagComponent,
 	RenderProps extends {} = {},
 	ComponentProps extends {} = {},
-> = TagComponentProps<T> &
+> = OverrideProps<
+	TagComponentProps<T>,
 	Partial<RenderProps> &
-	ComponentProps &
-	PolymorphicAttributes<T>;
-
-export type OverrideProps<T, P> = Omit<T, keyof P> & P;
+		ComponentProps &
+		PolymorphicAttributes<
+			T extends keyof JSX.HTMLElementTags
+				? T
+				: Component<
+						Omit<
+							OverrideProps<TagComponentProps<T>, RenderProps>,
+							"as" | keyof ComponentProps
+						>
+				  >
+		>
+>;
 
 /**
  * Polymorphic override of the `Dynamic` component.

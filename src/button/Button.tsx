@@ -1,5 +1,11 @@
 import { JSXElement, splitProps } from "solid-js";
-import {OptionalKeys, Polymorphic, PolymorphicProps, ValidPComponent, ValidPElementTags} from "../polymorphic";
+import {
+	OptionalKeys,
+	Polymorphic,
+	PolymorphicProps,
+	ValidPComponent,
+	ValidPElementTags,
+} from "../polymorphic";
 
 // Custom props from our Button
 interface ButtonProps {
@@ -47,7 +53,7 @@ function Button<T extends ValidPComponent<T, RenderButtonProps> = "button">(
 }
 
 interface Custom {
-	variant?: "outline" | "default";
+	variant?: "custom";
 	children?: JSXElement;
 	other?: "customAttribute";
 }
@@ -70,6 +76,8 @@ export const CustomCallbackExample = (
 		requiredOption="requiredOptionValue"
 		variant="default"
 		other="customAttribute"
-		as={(props) => ""}
+		as={(props) => {
+			return "";
+		}}
 	/>
 );
