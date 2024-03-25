@@ -1,10 +1,10 @@
 import { JSXElement, splitProps } from "solid-js";
-import { Polymorphic, PolymorphicProps, ValidPComponent } from "../polymorphic";
+import {OptionalKeys, Polymorphic, PolymorphicProps, ValidPComponent, ValidPElementTags} from "../polymorphic";
 
 // Custom props from our Button
 interface ButtonProps {
 	requiredOption: "requiredOptionValue";
-	variant?: "outline" | "default";
+	variant?: "outline" | "default" | undefined;
 }
 
 // Props we expect to pass on to the rendered element

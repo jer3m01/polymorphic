@@ -10,15 +10,19 @@ export type TagComponentProps<T extends ValidTagComponent> =
 		  ? P
 		  : Record<string, unknown>;
 
-type ExtractProps<T extends {}, Props extends {}> = Pick<
+export type ExtractProps<T extends {}, Props extends {}> = Pick<
 	T,
 	keyof T & keyof Props
 >;
 
-type ElementHasProps<
+export type ElementHasProps<
 	T extends keyof JSX.HTMLElementTags,
 	Props extends {},
 > = Props extends ExtractProps<JSX.HTMLElementTags[T], Props> ? T : never;
+
+export type OptionalKeys<T> = Exclude<{
+	[K in keyof T]: {} extends Pick<T, K> ? K : never
+}[keyof T], undefined>;
 
 export type ValidPElementTags<Props extends {}> = {
 	[Key in keyof JSX.HTMLElementTags]: ElementHasProps<Key, Props>;
@@ -28,7 +32,7 @@ export type ValidPComponent<
 	T extends ValidTagComponent,
 	RenderProps extends {},
 > =
-	| ValidPElementTags<RenderProps>
+	| ValidPElementTags<Omit<RenderProps, OptionalKeys<RenderProps>>>
 	| Component<ExtractProps<T, RenderProps & PolymorphicAttributes<T>>>;
 
 export interface PolymorphicAttributes<T extends ValidTagComponent> {
