@@ -1,10 +1,8 @@
 import { JSXElement, splitProps } from "solid-js";
 import {
-	OptionalKeys,
 	Polymorphic,
 	PolymorphicProps,
 	ValidPComponent,
-	ValidPElementTags,
 } from "../polymorphic";
 
 // Custom props from our Button
