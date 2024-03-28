@@ -85,16 +85,16 @@ export type PolymorphicProps<
 /**
  * Polymorphic override of the `Dynamic` component.
  */
-export function Polymorphic<T extends ValidTagComponent>(
-	props: OverrideProps<
-		TagComponentProps<T>,
-		PolymorphicAttributes<ValidTagComponent>
-	>,
+export function Polymorphic<RenderProps>(
+	props: RenderProps &
+		PolymorphicAttributes<ValidTagComponent> & {
+			custom: Record<string, unknown>;
+		},
 ): JSX.Element {
-	const [local, others] = splitProps(props, ["as"]);
+	const [local, custom, others] = splitProps(props, ["as"], ["custom"]);
 
 	return (
 		// @ts-ignore: Props are valid but too complicated and not worth calculating
-		<Dynamic component={local.as} {...others} />
+		<Dynamic component={local.as} {...custom} {...others} />
 	);
 }

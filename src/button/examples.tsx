@@ -1,6 +1,5 @@
 import { JSXElement } from "solid-js";
 import { Button } from "./Button";
-import { ValidPComponent } from "../polymorphic";
 
 // Extract for reference
 
