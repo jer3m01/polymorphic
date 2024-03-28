@@ -1,9 +1,5 @@
 import { JSXElement, splitProps } from "solid-js";
-import {
-	Polymorphic,
-	PolymorphicProps,
-	ValidPComponent,
-} from "../polymorphic";
+import { Polymorphic, PolymorphicProps, ValidPComponent } from "../polymorphic";
 
 // Custom props from our Button
 interface ButtonProps {
@@ -17,9 +13,9 @@ interface RenderButtonProps {
 	type?: "button" | "submit"; // We might pass `type`
 }
 
-function Button<T extends ValidPComponent<T, RenderButtonProps> = "button">(
-	props: PolymorphicProps<T, RenderButtonProps, ButtonProps>,
-): JSXElement {
+export function Button<
+	T extends ValidPComponent<T, RenderButtonProps> = "button",
+>(props: PolymorphicProps<T, RenderButtonProps, ButtonProps>): JSXElement {
 	let ref: HTMLElement;
 
 	const [local, others] = splitProps(props, [
@@ -37,7 +33,7 @@ function Button<T extends ValidPComponent<T, RenderButtonProps> = "button">(
 
 	return (
 		<Polymorphic
-			component={local.as ?? "button"}
+			as={local.as ?? "button"}
 			ref={(el) => {
 				ref = el;
 			}}
@@ -49,33 +45,3 @@ function Button<T extends ValidPComponent<T, RenderButtonProps> = "button">(
 		</Polymorphic>
 	);
 }
-
-interface Custom {
-	variant?: "custom";
-	children?: JSXElement;
-	other?: "customAttribute";
-}
-
-function CustomButton(props: Custom): JSXElement {
-	return "";
-}
-
-export const CustomExample = (
-	<Button
-		requiredOption="requiredOptionValue"
-		variant="default"
-		other="customAttribute"
-		as={CustomButton}
-	/>
-);
-
-export const CustomCallbackExample = (
-	<Button<typeof CustomButton>
-		requiredOption="requiredOptionValue"
-		variant="default"
-		other="customAttribute"
-		as={(props) => {
-			return "";
-		}}
-	/>
-);

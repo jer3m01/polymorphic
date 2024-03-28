@@ -46,7 +46,7 @@ export type ValidPComponent<
 	RenderProps extends {},
 > =
 	| ValidPElementTags<Omit<RenderProps, OptionalKeys<RenderProps>>> // All tag names compatible
-	| Component<ExtractProps<T, RenderProps & PolymorphicAttributes<T>>>; // Component with compatible props
+	| Component<RenderProps & PolymorphicAttributes<T>>; // Component with compatible props
 
 // Common polymorphic attributes
 export interface PolymorphicAttributes<T extends ValidTagComponent> {
@@ -68,10 +68,12 @@ export type PolymorphicProps<
 	TagComponentProps<T>, // Override props from custom/tag component with our own
 	Partial<RenderProps> & // Accept any partial props we forward to the rendered element
 		ComponentProps & // Accept custom props of our own component
-		PolymorphicAttributes< // Handle the `as` prop and other common props
+		PolymorphicAttributes<
+			// Handle the `as` prop and other common props
 			T extends keyof JSX.HTMLElementTags
 				? T // If the element is a native tag, don't analyze further
-				: Component< // If the element is a custom component, provide exact props for the `as={(props) => {...}}` callback
+				: Component<
+						// If the element is a custom component, provide exact props for the `as={(props) => {...}}` callback
 						Omit<
 							OverrideProps<TagComponentProps<T>, RenderProps>,
 							"as" | keyof ComponentProps // Remove the as prop and custom props used only in our component
@@ -84,7 +86,10 @@ export type PolymorphicProps<
  * Polymorphic override of the `Dynamic` component.
  */
 export function Polymorphic<T extends ValidTagComponent>(
-	props: OverrideProps<TagComponentProps<T>, PolymorphicAttributes<T>>,
+	props: OverrideProps<
+		TagComponentProps<T>,
+		PolymorphicAttributes<ValidTagComponent>
+	>,
 ): JSX.Element {
 	const [local, others] = splitProps(props, ["as"]);
 
