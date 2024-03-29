@@ -1,20 +1,6 @@
 import { JSXElement } from "solid-js";
-import { Button } from "./Button";
-
-// Extract for reference
-
-// Custom props from our Button
-interface ButtonProps {
-	requiredOption: "requiredOptionValue";
-	variant?: "outline" | "default" | undefined;
-}
-
-// Props we expect to pass on to the rendered element
-interface RenderButtonProps {
-	children: JSXElement; // We *need* to pass `children`
-	type?: "button" | "submit"; // We might pass `type`
-}
-// ----
+import {Button, ButtonProps, RenderButtonProps} from "./Button";
+import {PolymorphicCallbackProps} from "../polymorphic";
 
 function example0() {
 	return (
@@ -67,28 +53,6 @@ function example4() {
 	);
 }
 
-// Custom component (no children)
-// ========================================
-
-interface CustomComponentNoChildren {
-	myProp?: number;
-	variant?: "custom";
-	other?: "customAttribute";
-}
-
-function CustomButtonNoChildren(props: CustomComponentNoChildren): JSXElement {
-	return "stub";
-}
-
-function exampleNoChildren() {
-	return (
-		<Button
-			as={CustomButtonNoChildren} // Doesn't work CustomButtonNoChildren doesn't accept children but Polymorhpic requires it
-			requiredOption="requiredOptionValue"
-		/>
-	);
-}
-
 // Custom component (children)
 // ========================================
 
@@ -137,10 +101,11 @@ function example7() {
 
 function example8() {
 	return (
-		<Button<typeof CustomButton> // Needed because the `as` prop is a callback
+		<Button
 			requiredOption="requiredOptionValue"
-			as={(props) => {
-				type PropsType = typeof props; // Typed from generic
+			myProp={4}
+			as={(props: PolymorphicCallbackProps<Custom, ButtonProps, RenderButtonProps>) => { // Helper type
+				type PropsType = typeof props; // Exact props type
 
 				props.children; // JSXElement
 				props.type; // "button" | "submit" | undefined
@@ -158,10 +123,10 @@ function example8() {
 
 function example9() {
 	return (
-		<Button<typeof CustomButton>
+		<Button<typeof CustomButton> // Also technically works but less accurate than above
 			requiredOption="requiredOptionValue"
 			as={(props) => {
-				type PropsType = typeof props; // Typed from generic
+				type PropsType = typeof props; // Treated as Custom instead of the exact props
 
 				return CustomButton({ variant: "custom", ...props });
 			}}

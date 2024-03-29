@@ -1,21 +1,22 @@
-import { JSXElement, splitProps } from "solid-js";
-import { Polymorphic, PolymorphicProps, ValidPComponent } from "../polymorphic";
+import {JSXElement, ValidComponent, splitProps } from "solid-js";
+import { Polymorphic, PolymorphicProps } from "../polymorphic";
+
+
+// Props we expect to pass on to the rendered element
+export interface RenderButtonProps {
+	children: JSXElement;
+	type?: "button" | "submit";
+}
 
 // Custom props from our Button
-interface ButtonProps {
+export interface ButtonProps {
 	requiredOption: "requiredOptionValue";
 	variant?: "outline" | "default" | undefined;
 }
 
-// Props we expect to pass on to the rendered element
-interface RenderButtonProps {
-	children: JSXElement; // We *need* to pass `children`
-	type?: "button" | "submit"; // We might pass `type`
-}
-
 export function Button<
-	T extends ValidPComponent<T, RenderButtonProps> = "button",
->(props: PolymorphicProps<T, RenderButtonProps, ButtonProps>): JSXElement {
+	T extends ValidComponent = "button",
+>(props: PolymorphicProps<T, ButtonProps, RenderButtonProps>): JSXElement {
 	let ref: HTMLElement;
 
 	const [local, others] = splitProps(props, [
@@ -54,9 +55,29 @@ export function Button<
 			 *       The props accepted by the Button component itself serve as a safeguard and
 			 *       already provide all required features. See more `src/button/examples.tsx`.
 			 */
-			custom={others}
+			others={others}
 		>
 			{local.children}
 		</Polymorphic>
 	);
+}
+
+
+
+
+
+function CustomButton<T extends ValidComponent = "button">(props: {
+	test: "h",
+}): JSXElement {
+	return "";
+}
+
+function example5() {
+	return (
+		<Button
+			as={CustomButton}
+			// missing
+			//test="h"
+		 	requiredOption="requiredOptionValue"/>
+		);
 }
