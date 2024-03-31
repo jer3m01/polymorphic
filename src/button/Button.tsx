@@ -6,6 +6,8 @@ import { Polymorphic, PolymorphicProps } from "../polymorphic";
 export interface RenderButtonProps {
 	children: JSXElement;
 	type?: "button" | "submit";
+	ref?: HTMLElement | ((el: HTMLElement) => void);
+	class?: string;
 }
 
 // Custom props from our Button
@@ -46,16 +48,8 @@ export function Button<
 			}}
 			class={`polymorphic-button ${local.variant} ${local.class ?? ""}`}
 			type={tagName() === "button" ? "button" : undefined}
-			/*
-			 * Props that are inherited from custom `as`, not possible to determine using types.
-			 *
-			 * Note: You to tell the type but it cannot be used to extract any usefull information.
-			 *       This type is generic so impossible to effectively determine and is explicitely
-			 *       treated as `unknown`.
-			 *       The props accepted by the Button component itself serve as a safeguard and
-			 *       already provide all required features. See more `src/button/examples.tsx`.
-			 */
-			others={others}
+			
+			{...others}
 		>
 			{local.children}
 		</Polymorphic>

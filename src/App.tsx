@@ -1,25 +1,14 @@
-import type { Component } from "solid-js";
+import { Component, Show, For } from "solid-js";
+import {Dynamic} from "solid-js/web";
+import {dynamic} from "./index";
 
-import logo from "./logo.svg";
-import styles from "./App.module.css";
 
 const App: Component = () => {
 	return (
-		<div class={styles.App}>
-			<header class={styles.header}>
-				<img src={logo} class={styles.logo} alt="logo" />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<a
-					class={styles.link}
-					href="https://github.com/solidjs/solid"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn Solid
-				</a>
-			</header>
+		<div>
+			<For each={new Array(100000)}>
+				{() => !dynamic ? <button /> : <Dynamic component="button"/>}
+			</For>
 		</div>
 	);
 };

@@ -7,12 +7,6 @@ export type OverrideProps<T, P> = Omit<T, keyof P> & P;
 // Common polymorphic attributes
 export interface PolymorphicAttributes<T extends ValidComponent> {
 	as?: T | keyof JSX.HTMLElementTags;
-	ref?: HTMLElement | ((el: HTMLElement) => void);
-	id?: string;
-	class?: string;
-	classList?: {
-		[k: string]: boolean | undefined;
-	};
 }
 
 // Props accepted by a polymorphic component
@@ -38,15 +32,12 @@ export type PolymorphicCallbackProps<
  * Polymorphic override of the `Dynamic` component.
  */
 export function Polymorphic<RenderProps>(
-	props: RenderProps &
-		PolymorphicAttributes<ValidComponent> & {
-			others: Record<string, unknown>;
-		},
+	props: RenderProps & PolymorphicAttributes<ValidComponent>,
 ): JSX.Element {
-	const [local, custom, others] = splitProps(props, ["as"], ["others"]);
+	const [local, others] = splitProps(props, ["as"]);
 
 	return (
 		// @ts-ignore: Props are valid but too complicated and not worth calculating
-		<Dynamic component={local.as} {...custom} {...others} />
+		<Dynamic component={local.as} {...others} />
 	);
 }
